@@ -6,16 +6,20 @@ roles = [
 ]
 
 class Usuario(AbstractUser):
-    username = models.CharField(max_length=80,unique=True)
-    creado_en = models.DateTimeField(auto_now_add=True)
-    role = models.CharField(max_length=20, choices = roles)
+    fecha_nacimiento = models.DateTimeField(auto_now_add=True)
+    rol = models.CharField(max_length=20, choices = roles)
     def __str__(self):
         return self.username
-class Jugador(models.Model):
-    user_id= models.ForeignKey(Usuario,on_delete=models.PROTECT)
-    fecha_nacimiento = models.DateField()
+
+class Administrador(models.Model):    
+    usuario_id = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
+
+class Jugador(models.Model):    
+    usuario_id = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
     def __str__(self):
-        return f"{self.user_id.username}"    
+        return f"{self.user_id.username}"   
+
+    
 class Nivel(models.Model):
     nombre = models.CharField(max_length=50, unique=True)
     descripcion =  models.CharField(max_length=50)
@@ -33,7 +37,7 @@ class Evaluacion(models.Model):
     usuario_id =  models.ForeignKey(Usuario, on_delete=models.PROTECT)
     nivel_id =  models.ForeignKey(Nivel, on_delete=models.PROTECT)
     fecha = models.DateTimeField(auto_now_add=True)
-    puntaje = models.IntegerField()
+    puntaje = models.IntegerField(default=100)
     def __str__(self):
         return self.nivel_id.nombre
     

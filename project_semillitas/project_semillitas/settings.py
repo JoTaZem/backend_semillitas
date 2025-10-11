@@ -41,10 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_semillitas',
+    'corsheaders',
+    'rest_framework',   
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -130,13 +134,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 AUTH_USER_MODEL = 'app_semillitas.Usuario'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_HOST_USER=os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT =587
 EMAIL_USE_TLS = True
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        # ¡IMPORTANTE! Debe ser una TUPLA o LISTA. 
+        # La coma (,) final es crucial si solo hay un elemento.
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+CORS_ALLOWED_ORIGINS = [
+    # Tu frontend de Vite
+    "http://localhost:5173", 
+    
+    # También es una buena práctica incluir el origen de tu backend (aunque no es estrictamente necesario para el CORS en sí)
+    "http://127.0.0.1:8000", 
+]
