@@ -10,5 +10,6 @@ urlpatterns = {
     path('administrador/', AdminList.as_view(), name=''),
     path('administrador/<int:pk>', AdminDetail.as_view()),
     path('jugador/', JugadorList.as_view()),
-    path('jugador/<int:pk>',JugadorDetail.as_view())
+    path('jugador/<int:pk>',JugadorDetail.as_view()),
+    path('nivel/', NivelList.as_view()),
 }

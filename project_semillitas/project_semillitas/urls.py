@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('app_semillitas.urls')),
+    path('api',include('app_semillitas.urls')),
     path('api/',include('app_semillitas.urlsApi'))
 ]
 if settings.DEBUG:

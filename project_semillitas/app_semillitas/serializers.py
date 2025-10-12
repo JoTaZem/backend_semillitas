@@ -1,18 +1,31 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer  
 from .models import *
+from django.db import transaction
 
+
+class NivelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Nivel
+        fields = '__all__'
+class EvaluacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluacion
+        fields = '__all__'
+                
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = '__all__'
         depth = 2
         extra_kwargs = {
-            'password' :{'write_only': True},
+            'password' :{'write_only': True, 'required':False, 'allow_null':True},
         } 
     def create(self,validated_data):
         user =  Usuario(**validated_data)
-        user.set_password(validated_data['password'])
+        password = validated_data.get('password')
+        if password and password.strip():
+            user.set_password(password)
         user.save()
         return user
     
@@ -32,10 +45,24 @@ class JugadorSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Jugador
         fields = '__all__'
-    def create(self,validated_data):
+        read_only_fields = ('usuario_id',)
+    @transaction.atomic    
+    def create(self, validated_data):
+        # 1. Crear el Usuario
         usuario_data = validated_data.pop('usuario_id')
         usuario = UsuariosSerializer().create(usuario_data) 
-        jugador = Jugador.objects.create(usuario_id=usuario,**validated_data)
+        
+        # 2. 🔑 CLAVE: Limpiar los campos de Usuario que se filtraron
+        #    Esto soluciona el "TypeError: 'username' is an invalid keyword argument..."
+        usuario_fields_to_remove = ['username', 'email', 'first_name', 'last_name', 'rol', 'password']
+        for field in usuario_fields_to_remove:
+            # Elimina de forma segura la clave, si existe
+            validated_data.pop(field, None) 
+        
+        # 3. Crear el objeto Jugador
+        # Esto usará ahora los datos limpios + el objeto usuario
+        jugador = Jugador.objects.create(usuario_id=usuario, **validated_data) 
+        
         return jugador
     
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):

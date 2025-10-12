@@ -28,6 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = []
 
 
@@ -148,8 +149,7 @@ EMAIL_PORT =587
 EMAIL_USE_TLS = True
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES' : (
-        # ¡IMPORTANTE! Debe ser una TUPLA o LISTA. 
-        # La coma (,) final es crucial si solo hay un elemento.
+      
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
@@ -157,6 +157,5 @@ CORS_ALLOWED_ORIGINS = [
     # Tu frontend de Vite
     "http://localhost:5173", 
     
-    # También es una buena práctica incluir el origen de tu backend (aunque no es estrictamente necesario para el CORS en sí)
     "http://127.0.0.1:8000", 
 ]
