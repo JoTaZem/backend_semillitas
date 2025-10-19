@@ -6,7 +6,10 @@ roles = [
 ]
 
 class Usuario(AbstractUser):
-    fecha_nacimiento = models.DateTimeField(auto_now_add=True)
+    first_name = models.CharField(max_length=150, blank=True, null=True)
+    last_name = models.CharField(max_length=150, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True, unique=True) # Mantener unique para evitar duplicados
+    fecha_nacimiento = models.DateField(null=False)
     rol = models.CharField(max_length=20, choices = roles)
     def __str__(self):
         return self.username
@@ -17,7 +20,7 @@ class Administrador(models.Model):
 class Jugador(models.Model):    
     usuario_id = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
     def __str__(self):
-        return f"{self.user_id.username}"   
+        return f"{self.usuario_id.username}"   
 
     
 class Nivel(models.Model):
