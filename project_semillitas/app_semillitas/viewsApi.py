@@ -12,25 +12,27 @@ class AdminList(generics.ListCreateAPIView):
     queryset = Administrador.objects.all()
     serializer_class = AdminSerializer
     permission_classes = [AllowAny]
+    def get_queryset(self):
+        return Jugador.objects.select_related('usuario').all()
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
             admin= serializer.instance
             passwordGenerado = generar_password()
-            admin.usuario_id.set_password(passwordGenerado)
-            admin.usuario_id.save()
+            admin.usuario.set_password(passwordGenerado)
+            admin.usuario.save()
 
             asunto = "Registro de Usuario en el Sistema"
             mensajeCorreo = f"""
-            Cordial Saludo <b>{admin.usuario_id.first_name} {admin.usuario_id.last_name}</b>, usted ha sido registrado
+            Cordial Saludo <b>{admin.usuario.first_name} {admin.usuario.last_name}</b>, usted ha sido registrado
             en el sistema de Gestión Administradores de Semillitas Ampiu Sena.
             <br><br>nos permtimos enviar las credenciales de ingreso al sistema<br><br>
-            <b>Username:</b> {admin.usuario_id.username}<br>
+            <b>Username:</b> {admin.usuario.username}<br>
             <b>Password:</b> {passwordGenerado}<br>
             La URL del sistema es: https://127.0.0.1:8000/"""
             thread = threading.Thread(
-                target=enviarCorreo, args=(asunto, mensajeCorreo, [admin.usuario_id.email], None)
+                target=enviarCorreo, args=(asunto, mensajeCorreo, [admin.email], None)
             )
             thread.start()
             return Response(
@@ -52,6 +54,8 @@ class JugadorList(generics.ListCreateAPIView):
     queryset = Jugador.objects.all()
     serializer_class =JugadorSerializer
     permission_classes = [AllowAny]
+    def get_queryset(self):
+        return Jugador.objects.select_related('usuario').all()
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():

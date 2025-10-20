@@ -4,7 +4,7 @@ from .viewsApi import *
 from app_semillitas import viewsApi
 from rest_framework_simplejwt.views import TokenRefreshView
 
-urlpatterns = {
+urlpatterns = [
     path('token/',CustomTokenObtainPairView.as_view(),name='token_obtain_pair'),
     path('token/refresh',TokenRefreshView.as_view(),name='token_refresh'),
     path('administrador/', AdminList.as_view()),
@@ -14,4 +14,4 @@ urlpatterns = {
     path('evaluacion/',EvaluacionList.as_view()),
     path('nivel/', NivelList.as_view()),
     path('palabra/', PalabraList.as_view())
-}
+]

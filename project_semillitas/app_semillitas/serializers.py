@@ -21,7 +21,6 @@ class UsuariosSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = '__all__'
         depth = 2
-        depth = 2
         extra_kwargs = {'password' :{'write_only': True, 'required':False},
             'first_name': {'required': False},
             'username':{'required': False},
@@ -39,36 +38,36 @@ class UsuariosSerializer(serializers.ModelSerializer):
         return user
     
 class AdminSerializer(serializers.ModelSerializer):
-    usuario_id=UsuariosSerializer()
+    usuario=UsuariosSerializer()
     class Meta: 
         model = Administrador
         fields = '__all__'
     def create(self,validated_data):
-        usuario_data = validated_data.pop('usuario_id')
+        usuario_data = validated_data.pop('usuario')
         username = usuario_data.get('email')
         if not username:
             raise serializers.ValidationError({"email": "El correo es obligatorio para el Administrador."})
         usuario_data['username'] = username
         usuario_data['rol'] = 'Admin'
-        usuario = UsuariosSerializer().create(usuario_data) 
-        admin = Administrador.objects.create(usuario_id=usuario,**validated_data)
+        Usuario = UsuariosSerializer().create(usuario_data) 
+        admin = Administrador.objects.create(usuario=Usuario,**validated_data)
         return admin
     
 class JugadorSerializer(serializers.ModelSerializer):
-    usuario_id=UsuariosSerializer()
+    usuario=UsuariosSerializer()
     class Meta: 
         model = Jugador
         fields = '__all__'
     def create(self,validated_data):
-        usuario_data = validated_data.pop('usuario_id')
+        usuario_data = validated_data.pop('usuario')
         jugador_nombre = usuario_data.get('username')
         if not jugador_nombre:
             raise serializers.ValidationError({"username": "El nombre de usuario es obligatorio para el Jugador."})
  
         usuario_data['password'] = jugador_nombre
         usuario_data['rol'] = 'Jugador'
-        usuario = UsuariosSerializer().create(usuario_data)
-        jugador = Jugador.objects.create(usuario_id=usuario,**validated_data)        
+        Usuario = UsuariosSerializer().create(usuario_data)
+        jugador = Jugador.objects.create(usuario=Usuario,**validated_data)        
         return jugador  
         #usuario = UsuariosSerializer().create(usuario_data) 
         #jugador = Jugador.objects.create(usuario_id=usuario,**validated_data)        
