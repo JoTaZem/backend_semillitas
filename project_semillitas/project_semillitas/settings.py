@@ -157,5 +157,5 @@ CORS_ALLOWED_ORIGINS = [
     # Tu frontend de Vite
     "http://localhost:5173", 
     
-    "http://127.0.0.1:8000", 
+    "http://127.0.0.1:5153", 
 ]
