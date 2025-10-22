@@ -8,14 +8,26 @@ class NivelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nivel
         fields = '__all__'
+    def create(self, validated_data):
+        nivel = Nivel.objects.create(**validated_data)
+        return nivel
+
 class EvaluacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evaluacion
         fields = '__all__'
+    def create(self, validated_data):
+        evaluacion = Evaluacion.objects.create(**validated_data)
+        return evaluacion
+
 class PalabraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Palabra
-        fields = '__all__'                
+        fields = '__all__'
+    def create(self, validated_data):
+        palabra = Palabra.objects.create(**validated_data)
+        return palabra
+
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
@@ -72,7 +84,41 @@ class JugadorSerializer(serializers.ModelSerializer):
         #usuario = UsuariosSerializer().create(usuario_data) 
         #jugador = Jugador.objects.create(usuario_id=usuario,**validated_data)        
         #return jugador  
+
+class EjercicioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ejercicio
+        fields = '__all__'
+    def create(self, validated_data):
+        ejercicio = Ejercicio.objects.create(**validated_data)
+        return ejercicio
+
+class UsuarioPalabrasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=UsuarioPalabras
+        fields='__all__'
+    def create(self, validated_data):       
+        usuarioPalabras = UsuarioPalabras.objects.create(**validated_data)
+        return usuarioPalabras
     
+class EvaluacionUsuariosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvaluacionUsuarios
+        fields = '__all__'
+    def create(self, validated_data):
+        evaluacion_usuario = EvaluacionUsuarios.objects.create(**validated_data)
+        return evaluacion_usuario
+
+
+class ResultadoEvaluacionesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResultadoEvaluaciones
+        fields = '__all__'
+
+    def create(self, validated_data):
+        resultado = ResultadoEvaluaciones.objects.create(**validated_data)
+        return resultado
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user:Usuario):

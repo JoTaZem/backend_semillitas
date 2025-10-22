@@ -21,6 +21,7 @@ class AdminList(generics.ListCreateAPIView):
             admin= serializer.instance
             passwordGenerado = generar_password()
             admin.usuario.set_password(passwordGenerado)
+            admin.usuario.is_active = True
             admin.usuario.save()
 
             asunto = "Registro de Usuario en el Sistema"
@@ -59,6 +60,7 @@ class JugadorList(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            
             self.perform_create(serializer)
             
             return Response(
@@ -106,6 +108,10 @@ class EvaluacionList(generics.ListCreateAPIView):
             {'mensaje': 'Evaluación creada correctamente.', 'data': serializer.data},
             status=status.HTTP_201_CREATED
         )
+class EvaluacionDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Evaluacion.objects.all()
+    serializer_class = EvaluacionSerializer
+
 class PalabraList(generics.ListCreateAPIView):
     queryset = Palabra.objects.all()
     serializer_class = PalabraSerializer
@@ -118,6 +124,80 @@ class PalabraList(generics.ListCreateAPIView):
             {'mensaje': 'Palabra creada correctamente.', 'data': serializer.data},
             status=status.HTTP_201_CREATED
         )
+      
+
+class PalabraDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Palabra.objects.all()
+    serializer_class = PalabraSerializer
+
+class EjercicioList(generics.ListCreateAPIView):
+    queryset = Ejercicio.objects.all()
+    serializer_class = EjercicioSerializer
+    permission_classes = [AllowAny] 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {'mensaje': 'Ejercicio creado correctamente.', 'data': serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+
+class EjercicioDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ejercicio.objects.all()
+    serializer_class = EjercicioSerializer
+
+class UsuarioPalabrasList(generics.ListCreateAPIView):
+    queryset = UsuarioPalabras.objects.all()
+    serializer_class = UsuarioPalabrasSerializer
+    permission_classes = [AllowAny] 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {'mensaje': 'UsuarioPalabras creado correctamente.', 'data': serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+
+class UsuarioPalabrasDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UsuarioPalabras.objects.all()
+    serializer_class = UsuarioPalabrasSerializer
+
+class EvaluacionUsuariosList(generics.ListCreateAPIView):
+    queryset = EvaluacionUsuarios.objects.all()
+    serializer_class = EvaluacionUsuariosSerializer
+    permission_classes = [AllowAny] 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {'mensaje': 'EvaluacionUsuarios creado correctamente.', 'data': serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+
+class EvaluacionUsuariosDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EvaluacionUsuarios.objects.all()
+    serializer_class = EvaluacionUsuariosSerializer
+
+class ResultadoEvaluacionesList(generics.ListCreateAPIView):
+    queryset = ResultadoEvaluaciones.objects.all()
+    serializer_class = ResultadoEvaluacionesSerializer
+    permission_classes = [AllowAny] 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(
+            {'mensaje': 'ResultadoEvaluaciones creado correctamente.', 'data': serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+
+class ResultadoEvaluacionesDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ResultadoEvaluaciones.objects.all()
+    serializer_class = ResultadoEvaluacionesSerializer
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     
