@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from .viewsApi import *
-from app_semillitas import viewsApi
+#from app_semillitas import viewsApi
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -13,5 +13,7 @@ urlpatterns = [
     path('jugador/<int:pk>',JugadorDetail.as_view()),
     path('evaluacion/',EvaluacionList.as_view()),
     path('nivel/', NivelList.as_view()),
-    path('palabra/', PalabraList.as_view())
+    path('palabra/', PalabraList.as_view()),
+    path('recoleccion/', UsuarioPalabrasList.as_view()),
+    path('resultado/', ResultadoEvaluacionesList.as_view()),
 ]

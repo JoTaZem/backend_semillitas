@@ -9,31 +9,31 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 #Get y Post para el admin
 class AdminList(generics.ListCreateAPIView):
-    queryset = Administrador.objects.all()
+    queryset = Usuario.objects.filter(rol='Admin')
     serializer_class = AdminSerializer
     permission_classes = [AllowAny]
-    def get_queryset(self):
-        return Jugador.objects.select_related('usuario').all()
+    
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
-            admin= serializer.instance
+            
             passwordGenerado = generar_password()
-            admin.usuario.set_password(passwordGenerado)
-            admin.usuario.is_active = True
-            admin.usuario.save()
+            admin= serializer.instance
+            admin.set_password(passwordGenerado)
+            admin.is_active = True
+            admin.save()
 
             asunto = "Registro de Usuario en el Sistema"
             mensajeCorreo = f"""
-            Cordial Saludo <b>{admin.usuario.first_name} {admin.usuario.last_name}</b>, usted ha sido registrado
+            Cordial Saludo <b>{admin.first_name} {admin.last_name}</b>, usted ha sido registrado
             en el sistema de Gestión Administradores de Semillitas Ampiu Sena.
             <br><br>nos permtimos enviar las credenciales de ingreso al sistema<br><br>
-            <b>Username:</b> {admin.usuario.username}<br>
+            <b>Username:</b> {admin.username}<br>
             <b>Password:</b> {passwordGenerado}<br>
             La URL del sistema es: https://127.0.0.1:8000/"""
             thread = threading.Thread(
-                target=enviarCorreo, args=(asunto, mensajeCorreo, [admin.usuario.email], None)
+                target=enviarCorreo, args=(asunto, mensajeCorreo, [admin.email], None)
             )
             thread.start()
             return Response(
@@ -47,16 +47,14 @@ class AdminList(generics.ListCreateAPIView):
             )
 #Update y delete admin
 class AdminDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Administrador.objects.all()
+    queryset = Usuario.objects.filter(rol='Admin')
     serializer_class = AdminSerializer
 
 #Get y Post Jugador
 class JugadorList(generics.ListCreateAPIView):
-    queryset = Jugador.objects.all()
+    queryset = queryset = Usuario.objects.filter(rol='Jugador')
     serializer_class =JugadorSerializer
     permission_classes = [AllowAny]
-    def get_queryset(self):
-        return Jugador.objects.select_related('usuario').all()
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -75,7 +73,7 @@ class JugadorList(generics.ListCreateAPIView):
 
 #Put y Delete Jugador
 class JugadorDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Jugador.objects.all()
+    queryset = queryset = Usuario.objects.filter(rol='Jugador')
     serializer_class = JugadorSerializer
     
 

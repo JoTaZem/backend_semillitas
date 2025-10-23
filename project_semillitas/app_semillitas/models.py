@@ -14,15 +14,15 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.username
 
-class Administrador(models.Model):    
-    usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
-    def __str__(self):
-        return f"{self.usuario.username}"
-    
-class Jugador(models.Model):    
-    usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
-    def __str__(self):
-        return f"{self.usuario.username}"   
+# class Administrador(models.Model):    
+#     usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
+#     def __str__(self):
+#         return f"{self.usuario.username}"
+#     
+# class Jugador(models.Model):    
+#     usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT) 
+#     def __str__(self):
+#         return f"{self.usuario.username}"
 
     
 class Nivel(models.Model):

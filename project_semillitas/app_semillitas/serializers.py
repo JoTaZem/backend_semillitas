@@ -50,41 +50,81 @@ class UsuariosSerializer(serializers.ModelSerializer):
         return user
     
 class AdminSerializer(serializers.ModelSerializer):
-    usuario=UsuariosSerializer()
     class Meta: 
-        model = Administrador
+        model = Usuario
         fields = '__all__'
-    def create(self,validated_data):
-        usuario_data = validated_data.pop('usuario')
-        username = usuario_data.get('email')
+        # Se agregan extra_kwargs para hacer email requerido y password/username de solo lectura
+        extra_kwargs = {
+             'password': {'write_only': True, 'required': False},
+             'username': {'required': False},
+             'email': {'required': True},
+             'rol': {'required': False, 'read_only': True},
+             'fecha_nacimiento': {'required': True}
+        }
+    
+    # Nuevo método para manipular los datos ANTES de llamar a .create()
+    def validate(self, data):
+        username = data.get('email')
+        
+        # Lógica: el correo es obligatorio y será el username
         if not username:
             raise serializers.ValidationError({"email": "El correo es obligatorio para el Administrador."})
-        usuario_data['username'] = username
-        usuario_data['rol'] = 'Admin'
-        Usuario = UsuariosSerializer().create(usuario_data) 
-        admin = Administrador.objects.create(usuario=Usuario,**validated_data)
-        return admin
-    
+            
+        data['username'] = username
+        data['rol'] = 'Admin'
+        
+        # El password se deja fuera de 'data' o con un valor nulo.
+        # En este caso, no se incluye el password generado aquí, lo hará la vista.
+        
+        return data
+
+    def create(self, validated_data):
+        # La vista 'AdminList' se encarga de generar la contraseña y hashearla DESPUÉS de la creación.
+        # Aquí solo creamos el usuario con los datos validados (que ya incluyen 'username' y 'rol').
+        user = Usuario.objects.create(**validated_data)
+        
+        # NOTA: La contraseña no se setea aquí para que la vista pueda usar 'passwordGenerado'
+        # para el correo. La vista se encarga de user.set_password() y user.save().
+        
+        return user
 class JugadorSerializer(serializers.ModelSerializer):
-    usuario=UsuariosSerializer()
     class Meta: 
-        model = Jugador
+        model = Usuario
         fields = '__all__'
-    def create(self,validated_data):
-        usuario_data = validated_data.pop('usuario')
-        jugador_nombre = usuario_data.get('username')
+        # Se agrega username como requerido y rol de solo lectura.
+        extra_kwargs = {
+             'password': {'write_only': True, 'required': False},
+             'username': {'required': True}, # Username obligatorio para Jugador
+             'email': {'required': False},
+             'rol': {'required': False, 'read_only': True},
+             'fecha_nacimiento': {'required': True}
+        }
+        
+    def validate(self, data):
+        jugador_nombre = data.get('username')
+        
         if not jugador_nombre:
             raise serializers.ValidationError({"username": "El nombre de usuario es obligatorio para el Jugador."})
- 
-        usuario_data['password'] = jugador_nombre
-        usuario_data['rol'] = 'Jugador'
-        Usuario = UsuariosSerializer().create(usuario_data)
-        jugador = Jugador.objects.create(usuario=Usuario,**validated_data)        
-        return jugador  
-        #usuario = UsuariosSerializer().create(usuario_data) 
-        #jugador = Jugador.objects.create(usuario_id=usuario,**validated_data)        
-        #return jugador  
-
+            
+        # Lógica: si no se da password, se usa el username
+        if 'password' not in data or not data['password']:
+            data['password'] = jugador_nombre
+            
+        data['rol'] = 'Jugador'
+        
+        return data
+        
+    def create(self,validated_data):
+        # 1. Creamos la instancia, la contraseña ya viene en validated_data (sea la enviada o el username)
+        password = validated_data.pop('password', None)
+        user = Usuario(**validated_data)
+        
+        # 2. Hasheamos la contraseña y guardamos
+        if password:
+            user.set_password(password)
+            
+        user.save()
+        return user
 class EjercicioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ejercicio
@@ -130,20 +170,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     def validate(self, attrs):
         data = super().validate(attrs)
-        if self.user.rol=='Admin':
-            admin=Administrador.objects.filter(usuario_id=self.user).first()
-            objetoRol = {
-                "id" : admin.id,
-            }
-        else:
-            jugador=Jugador.objects.filter(usuario_id=self.user).first()
-            objetoRol = {
-                "id" : jugador.id
-            }
+        
+        # Elimina las búsquedas innecesarias que causaban errores
+        # admin=Usuario.objects.filter(usuario_id=self.user).first()
+        
         data['user'] = {
             'id':self.user.id,
             'username':self.user.username,
             'rol':self.user.rol,
-
-        }    
-        return data 
+            # Se puede añadir el ID principal aquí directamente:
+            'rol_id': self.user.id, 
+        }
+        return data
