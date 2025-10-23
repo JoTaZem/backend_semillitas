@@ -64,7 +64,7 @@ def login(request):
     return JsonResponse({"mensaje": "Método no permitido"}, status=405)
 
 
-def generar_password(longitud=12):
-    caracteres = string.ascii_letters + string.digits + string.punctuation
+def generar_password(longitud=8):
+    caracteres = string.ascii_letters + string.digits 
     password = ''.join(random.choice(caracteres) for _ in range(longitud))
     return password
