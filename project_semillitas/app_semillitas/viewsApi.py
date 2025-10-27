@@ -31,7 +31,7 @@ class AdminList(generics.ListCreateAPIView):
             <br><br>nos permtimos enviar las credenciales de ingreso al sistema<br><br>
             <b>Username:</b> {admin.username}<br>
             <b>Password:</b> {passwordGenerado}<br>
-            La URL del sistema es: https://127.0.0.1:8000/"""
+            La URL del sistema es: http://localhost:5173/"""
             thread = threading.Thread(
                 target=enviarCorreo, args=(asunto, mensajeCorreo, [admin.email], None)
             )
