@@ -12,6 +12,7 @@ urlpatterns = [
     path('jugador/', JugadorList.as_view()),
     path('jugador/<int:pk>',JugadorDetail.as_view()),
     path('evaluacion/',EvaluacionList.as_view()),
+    path('evaluacion/<int:pk>',EvaluacionDetail.as_view()),
     path('nivel/', NivelList.as_view()),
     path('palabra/', PalabraList.as_view()),
     path('recoleccion/', UsuarioPalabrasList.as_view()),
