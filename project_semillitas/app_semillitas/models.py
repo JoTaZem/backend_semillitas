@@ -51,9 +51,11 @@ class Ejercicio(models.Model):
     palabra = models.ForeignKey(Palabra,on_delete=models.PROTECT)
 
 class UsuarioPalabras(models.Model):
-    usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT,unique=True)
-    palabra = models.ForeignKey(Palabra,on_delete=models.PROTECT,unique=True)
+    usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT)
+    palabra = models.ForeignKey(Palabra,on_delete=models.PROTECT)
     fecha_recogida = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('usuario', 'palabra')
     def __str__(self):
         return self.fecha_recogida
     

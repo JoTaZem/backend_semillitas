@@ -14,7 +14,11 @@ urlpatterns = [
     path('evaluacion/',EvaluacionList.as_view()),
     path('evaluacion/<int:pk>',EvaluacionDetail.as_view()),
     path('nivel/', NivelList.as_view()),
+    path('nivel/<int:pk>', NivelDetail.as_view()),
     path('palabra/', PalabraList.as_view()),
+    path('palabra/<int:pk>', PalabraDetail.as_view()),
+    path('ejercicio/', EjercicioList.as_view()),
+    path('ejercicio/<int:pk>', EjercicioDetail.as_view()),
     path('recoleccion/', UsuarioPalabrasList.as_view()),
     path('resultado/', ResultadoEvaluacionesList.as_view()),
 ]
