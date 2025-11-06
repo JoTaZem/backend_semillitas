@@ -49,6 +49,8 @@ class Evaluacion(models.Model):
 class Ejercicio(models.Model):
     evaluacion = models.ForeignKey(Evaluacion,on_delete=models.PROTECT)
     palabra = models.ForeignKey(Palabra,on_delete=models.PROTECT)
+    class Meta:
+        unique_together = ('evaluacion', 'palabra')
 
 class UsuarioPalabras(models.Model):
     usuario = models.ForeignKey(Usuario,on_delete=models.PROTECT)

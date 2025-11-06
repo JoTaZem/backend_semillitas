@@ -20,5 +20,9 @@ urlpatterns = [
     path('ejercicio/', EjercicioList.as_view()),
     path('ejercicio/<int:pk>', EjercicioDetail.as_view()),
     path('recoleccion/', UsuarioPalabrasList.as_view()),
+    path('recoleccion/<int:pk>', UsuarioPalabrasDetail.as_view()),
     path('resultado/', ResultadoEvaluacionesList.as_view()),
+    path('resultado/<int:pk>', ResultadoEvaluacionesDetail.as_view()),
+    path('evaluado/', EvaluacionUsuariosList.as_view()),
+    path('evaluado/<int:pk>', EvaluacionUsuariosDetail.as_view()),
 ]
