@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'app_semillitas',
     'corsheaders',
     'rest_framework',   
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

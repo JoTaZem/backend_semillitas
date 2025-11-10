@@ -134,6 +134,11 @@ class EjercicioSerializer(serializers.ModelSerializer):
         return ejercicio
 
 class UsuarioPalabrasSerializer(serializers.ModelSerializer):
+    palabra = serializers.PrimaryKeyRelatedField(
+        queryset=Palabra.objects.all(),
+        required=True 
+    )
+    palabra_data = PalabraSerializer(source='palabra', read_only=True)
     class Meta:
         model=UsuarioPalabras
         fields='__all__'

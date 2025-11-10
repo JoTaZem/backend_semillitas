@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny
 from .views import *
 import threading
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django_filters.rest_framework import DjangoFilterBackend
 
 #Get y Post para el admin
 class AdminList(generics.ListCreateAPIView):
@@ -149,6 +150,9 @@ class UsuarioPalabrasList(generics.ListCreateAPIView):
     queryset = UsuarioPalabras.objects.all()
     serializer_class = UsuarioPalabrasSerializer
     permission_classes = [AllowAny] 
+    filter_backends = [DjangoFilterBackend] # Usar el backend de filtro
+    # Define qué campos se pueden usar para filtrar en la URL
+    filterset_fields = ['usuario', 'palabra']
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
